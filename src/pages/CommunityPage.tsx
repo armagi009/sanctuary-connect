@@ -1,9 +1,14 @@
 import { ArticleCard } from '@/components/ArticleCard';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search, Mic, Headphones, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { useCommunityStore } from '@/stores/communityStore';
+import { AudioPlayerCard } from '@/components/AudioPlayerCard';
+const mockMeditations = [
+  { title: 'Morning Gratitude', author: 'Dr. Althea Sol', duration: 600 }, // 10 min
+  { title: 'Body Scan for Deep Rest', author: 'Lena Petrova', duration: 1200 }, // 20 min
+  { title: 'Connecting to Nature', author: 'Marcus Thorne', duration: 900 }, // 15 min
+];
 export function CommunityPage() {
   const articles = useCommunityStore((state) => state.articles);
   return (
@@ -25,8 +30,24 @@ export function CommunityPage() {
           </div>
         </div>
       </section>
-      {/* Featured Articles Section */}
+      {/* Guided Meditations Section */}
       <section className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tight">Guided Meditations</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+              Find your center with these audio practices led by our practitioners.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {mockMeditations.map((meditation, index) => (
+              <AudioPlayerCard key={index} meditation={meditation} />
+            ))}
+          </div>
+        </div>
+      </section>
+      {/* Featured Articles Section */}
+      <section className="bg-secondary py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-baseline mb-12">
             <h2 className="text-3xl font-bold tracking-tight">Featured Articles</h2>
@@ -42,50 +63,6 @@ export function CommunityPage() {
            <div className="mt-12 text-center sm:hidden">
              <Button variant="outline">View All Articles</Button>
            </div>
-        </div>
-      </section>
-      {/* Guided Meditations Section */}
-      <section className="bg-secondary py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
-              <Headphones className="w-8 h-8" />
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight">Guided Meditations</h2>
-            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-              Find your center with these audio practices led by our practitioners.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Mock Meditation Cards */}
-            <Card className="p-6">
-              <CardContent className="flex flex-col items-center text-center p-0">
-                <Mic className="w-10 h-10 text-primary mb-4" />
-                <h3 className="font-semibold">Morning Gratitude</h3>
-                <p className="text-sm text-muted-foreground mt-1">with Dr. Althea Sol</p>
-                <p className="text-sm text-muted-foreground mt-4">10 min</p>
-                <Button className="mt-4 w-full">Play</Button>
-              </CardContent>
-            </Card>
-            <Card className="p-6">
-              <CardContent className="flex flex-col items-center text-center p-0">
-                <Mic className="w-10 h-10 text-primary mb-4" />
-                <h3 className="font-semibold">Body Scan for Deep Rest</h3>
-                <p className="text-sm text-muted-foreground mt-1">with Lena Petrova</p>
-                <p className="text-sm text-muted-foreground mt-4">20 min</p>
-                <Button className="mt-4 w-full">Play</Button>
-              </CardContent>
-            </Card>
-            <Card className="p-6">
-              <CardContent className="flex flex-col items-center text-center p-0">
-                <Mic className="w-10 h-10 text-primary mb-4" />
-                <h3 className="font-semibold">Connecting to Nature</h3>
-                <p className="text-sm text-muted-foreground mt-1">with Marcus Thorne</p>
-                <p className="text-sm text-muted-foreground mt-4">15 min</p>
-                <Button className="mt-4 w-full">Play</Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </section>
     </div>

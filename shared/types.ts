@@ -63,3 +63,12 @@ export interface Review {
   insight: string;
   recommendation: string;
 }
+export interface SessionNote {
+  id: string;
+  sessionId: string;
+  practitionerId: string;
+  seekerId: string;
+  title: string;
+  content: string;
+  createdAt: string; // ISO string
+}

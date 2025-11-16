@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useBookingStore, BookedSession } from '@/stores/bookingStore';
 import { useReviewStore, NewReview } from '@/stores/reviewStore';
+import { useSessionNotesStore } from '@/stores/sessionNotesStore';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, User, Settings, Clock, Video, Sparkles, History, MessageSquarePlus } from 'lucide-react';
+import { Calendar, User, Settings, Clock, Video, Sparkles, History, MessageSquarePlus, Notebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -13,11 +14,13 @@ import { ReviewForm } from '@/components/ReviewForm';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 export function DashboardPage() {
   const user = useAuthStore((state) => state.user);
   const bookedSessions = useBookingStore((state) => state.bookedSessions);
   const addReview = useReviewStore((state) => state.addReview);
   const allReviews = useReviewStore((state) => state.reviews);
+  const allNotes = useSessionNotesStore((state) => state.notes);
   const [sessionToReview, setSessionToReview] = useState<BookedSession | null>(null);
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   if (!user) {
@@ -31,6 +34,9 @@ export function DashboardPage() {
     .filter(session => new Date(session.date) < now)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const reviewedSessionIds = new Set(allReviews.map(r => r.practitionerId + r.reviewerName)); // Simple check
+  const seekerNotes = allNotes
+    .filter(note => note.seekerId === user.id)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   const handleReviewSubmit = (review: NewReview) => {
     const reviewer = {
       name: user.name,
@@ -52,9 +58,10 @@ export function DashboardPage() {
             <p className="text-muted-foreground mt-1">Welcome, {user.name}. Manage your sessions, profile, and account settings.</p>
           </header>
           <Tabs defaultValue="upcoming" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:w-auto">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 md:w-auto">
               <TabsTrigger value="upcoming"><Calendar className="w-4 h-4 mr-2" /> Upcoming</TabsTrigger>
               <TabsTrigger value="past"><History className="w-4 h-4 mr-2" /> Past Sessions</TabsTrigger>
+              <TabsTrigger value="notes"><Notebook className="w-4 h-4 mr-2" /> Session Notes</TabsTrigger>
               <TabsTrigger value="profile"><User className="w-4 h-4 mr-2" /> Profile</TabsTrigger>
               <TabsTrigger value="settings"><Settings className="w-4 h-4 mr-2" /> Settings</TabsTrigger>
             </TabsList>
@@ -128,6 +135,44 @@ export function DashboardPage() {
                       <History className="mx-auto h-12 w-12 text-gray-400" />
                       <h3 className="mt-2 text-sm font-semibold">No past sessions</h3>
                       <p className="mt-1 text-sm">Your completed sessions will appear here.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="notes" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Session Notes & Resources</CardTitle>
+                  <CardDescription>Review notes and resources shared by your practitioners after your sessions.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {seekerNotes.length > 0 ? (
+                    <Accordion type="single" collapsible className="w-full">
+                      {seekerNotes.map(note => {
+                        const session = bookedSessions.find(s => s.id === note.sessionId);
+                        return (
+                          <AccordionItem value={note.id} key={note.id}>
+                            <AccordionTrigger>
+                              <div className="flex flex-col items-start text-left">
+                                <span className="font-semibold">{note.title}</span>
+                                <span className="text-sm text-muted-foreground">
+                                  From {session?.practitioner.name} on {format(new Date(note.createdAt), 'PPP')}
+                                </span>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap p-4">
+                              {note.content}
+                            </AccordionContent>
+                          </AccordionItem>
+                        );
+                      })}
+                    </Accordion>
+                  ) : (
+                    <div className="text-center text-muted-foreground py-12">
+                      <Notebook className="mx-auto h-12 w-12 text-gray-400" />
+                      <h3 className="mt-2 text-sm font-semibold">No session notes yet</h3>
+                      <p className="mt-1 text-sm">Practitioners may share notes with you here after a session.</p>
                     </div>
                   )}
                 </CardContent>
