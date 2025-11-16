@@ -14,6 +14,11 @@ import { App } from '@/App';
 import { HomePage } from '@/pages/HomePage';
 import { DiscoveryPage } from '@/pages/DiscoveryPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { LoginPage } from '@/pages/LoginPage';
+import { SignUpPage } from '@/pages/SignUpPage';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { CommunityPage } from '@/pages/CommunityPage';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,7 +28,15 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "discover", element: <DiscoveryPage /> },
       { path: "practitioners/:id", element: <ProfilePage /> },
-      // Add other pages here as they are built
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignUpPage /> },
+      { path: "community", element: <CommunityPage /> },
+      { 
+        element: <ProtectedRoute />,
+        children: [
+          { path: "dashboard", element: <DashboardPage /> },
+        ]
+      },
     ],
   },
 ]);
