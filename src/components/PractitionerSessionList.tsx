@@ -5,6 +5,7 @@ import { Calendar, Clock, User, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { MOCK_PRACTITIONERS } from '@/data/mockData';
+import { Link } from 'react-router-dom';
 export function PractitionerSessionList() {
   const allBookedSessions = useBookingStore((state) => state.bookedSessions);
   const practitionerUser = useAuthStore((state) => state.user);
@@ -43,7 +44,11 @@ export function PractitionerSessionList() {
                     <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> With a Seeker</span>
                   </div>
                 </div>
-                <Button><Video className="w-4 h-4 mr-2" /> Start Session</Button>
+                <Button asChild>
+                  <Link to={`/session/${session.id}`}>
+                    <Video className="w-4 h-4 mr-2" /> Start Session
+                  </Link>
+                </Button>
               </div>
             ))
           ) : (

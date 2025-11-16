@@ -109,7 +109,7 @@ export function HomePage() {
               <Link to="/discover">Find a Practitioner</Link>
             </Button>
             <Button asChild size="lg" variant="secondary">
-              <Link to="#">Join as a Practitioner</Link>
+              <Link to="/apply">Join as a Practitioner</Link>
             </Button>
           </div>
         </div>

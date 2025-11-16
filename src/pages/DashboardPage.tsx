@@ -77,7 +77,11 @@ export function DashboardPage() {
                         </div>
                         <div className="flex gap-2">
                           <Button variant="outline">Reschedule</Button>
-                          <Button><Video className="w-4 h-4 mr-2" /> Join Session</Button>
+                          <Button asChild>
+                            <Link to={`/session/${session.id}`}>
+                              <Video className="w-4 h-4 mr-2" /> Join Session
+                            </Link>
+                          </Button>
                         </div>
                       </div>
                     ))

@@ -22,6 +22,8 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { BookingPage } from '@/pages/BookingPage';
 import { ArticlePage } from '@/pages/ArticlePage';
 import { PractitionerDashboardPage } from '@/pages/PractitionerDashboardPage';
+import { SessionPage } from '@/pages/SessionPage';
+import { PractitionerApplicationPage } from '@/pages/PractitionerApplicationPage';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,12 +37,14 @@ const router = createBrowserRouter([
       { path: "signup", element: <SignUpPage /> },
       { path: "community", element: <CommunityPage /> },
       { path: "community/:articleId", element: <ArticlePage /> },
+      { path: "apply", element: <PractitionerApplicationPage /> },
       {
         element: <ProtectedRoute />,
         children: [
           { path: "dashboard", element: <DashboardPage /> },
           { path: "practitioner-dashboard", element: <PractitionerDashboardPage /> },
           { path: "book/:practitionerId", element: <BookingPage /> },
+          { path: "session/:sessionId", element: <SessionPage /> },
         ]
       },
     ],
