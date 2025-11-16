@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { PractitionerCard } from '@/components/PractitionerCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +12,24 @@ import { MOCK_PRACTITIONERS } from '@/data/mockData';
 const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))].sort();
 const MAX_PRICE = 300; // Assuming max price for slider
 export function DiscoveryPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedModalities, setSelectedModalities] = useState<Set<string>>(new Set());
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [nameQuery, setNameQuery] = useState('');
+  const [keywordQuery, setKeywordQuery] = useState(searchParams.get('query') || '');
+  const [selectedModalities, setSelectedModalities] = useState<Set<string>>(
+    new Set(searchParams.getAll('modality'))
+  );
   const [priceRange, setPriceRange] = useState([0, MAX_PRICE]);
+  // Effect to sync state to URL params
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (keywordQuery) {
+      params.set('query', keywordQuery);
+    }
+    selectedModalities.forEach(modality => {
+      params.append('modality', modality);
+    });
+    setSearchParams(params, { replace: true });
+  }, [keywordQuery, selectedModalities, setSearchParams]);
   const handleModalityChange = (modality: string, checked: boolean) => {
     setSelectedModalities(prev => {
       const newSet = new Set(prev);
@@ -26,20 +42,25 @@ export function DiscoveryPage() {
     });
   };
   const clearFilters = () => {
-    setSearchQuery('');
+    setNameQuery('');
+    setKeywordQuery('');
     setSelectedModalities(new Set());
     setPriceRange([0, MAX_PRICE]);
   };
   const filteredPractitioners = useMemo(() => {
     return MOCK_PRACTITIONERS.filter(p => {
-      const nameMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const nameMatch = p.name.toLowerCase().includes(nameQuery.toLowerCase());
       const modalityMatch = selectedModalities.size === 0 || p.modalities.some(m => selectedModalities.has(m));
-      // This is a mock filter as price is not on practitioner object.
-      // We'll just let this pass for now. A real implementation would check session prices.
+      const keywordMatch = !keywordQuery ||
+        p.philosophy.toLowerCase().includes(keywordQuery.toLowerCase()) ||
+        p.specialty.focus.toLowerCase().includes(keywordQuery.toLowerCase()) ||
+        p.specialty.approach.toLowerCase().includes(keywordQuery.toLowerCase()) ||
+        p.tagline.toLowerCase().includes(keywordQuery.toLowerCase());
+      // Mock price filter
       const priceMatch = true;
-      return nameMatch && modalityMatch && priceMatch;
+      return nameMatch && modalityMatch && keywordMatch && priceMatch;
     });
-  }, [searchQuery, selectedModalities]);
+  }, [nameQuery, keywordQuery, selectedModalities]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-12">
@@ -59,17 +80,20 @@ export function DiscoveryPage() {
                   <X className="w-4 h-4 mr-1" /> Clear all
                 </Button>
               </div>
-              <div>
-                <Label htmlFor="search" className="sr-only">Search</Label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    id="search"
-                    placeholder="Search by name..."
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name-search" className="text-sm font-medium">Name</Label>
+                  <div className="relative mt-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input id="name-search" placeholder="Search by name..." className="pl-9" value={nameQuery} onChange={(e) => setNameQuery(e.target.value)} />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="keyword-search" className="text-sm font-medium">Keywords</Label>
+                  <div className="relative mt-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input id="keyword-search" placeholder="Search philosophy, specialty..." className="pl-9" value={keywordQuery} onChange={(e) => setKeywordQuery(e.target.value)} />
+                  </div>
                 </div>
               </div>
               <Accordion type="multiple" defaultValue={['modalities']} className="w-full">
@@ -79,11 +103,7 @@ export function DiscoveryPage() {
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                       {ALL_MODALITIES.map(modality => (
                         <div key={modality} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`modality-${modality}`}
-                            checked={selectedModalities.has(modality)}
-                            onCheckedChange={(checked) => handleModalityChange(modality, !!checked)}
-                          />
+                          <Checkbox id={`modality-${modality}`} checked={selectedModalities.has(modality)} onCheckedChange={(checked) => handleModalityChange(modality, !!checked)} />
                           <Label htmlFor={`modality-${modality}`} className="font-normal cursor-pointer">{modality}</Label>
                         </div>
                       ))}
@@ -94,12 +114,7 @@ export function DiscoveryPage() {
                   <AccordionTrigger className="text-base font-medium">Price Range</AccordionTrigger>
                   <AccordionContent>
                     <div className="p-1">
-                      <Slider
-                        value={priceRange}
-                        max={MAX_PRICE}
-                        step={10}
-                        onValueChange={setPriceRange}
-                      />
+                      <Slider value={priceRange} max={MAX_PRICE} step={10} onValueChange={setPriceRange} />
                       <div className="flex justify-between text-sm text-muted-foreground mt-2">
                         <span>${priceRange[0]}</span>
                         <span>${priceRange[1]}</span>
@@ -129,9 +144,6 @@ export function DiscoveryPage() {
                 <Button variant="outline" className="mt-6" onClick={clearFilters}>Clear Filters</Button>
               </div>
             )}
-            {/* <div className="mt-12 flex justify-center">
-              <Button variant="outline">Load More</Button>
-            </div> */}
           </main>
         </div>
       </div>

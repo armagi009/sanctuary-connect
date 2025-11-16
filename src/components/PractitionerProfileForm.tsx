@@ -15,6 +15,8 @@ export function PractitionerProfileForm() {
     philosophy: currentPractitioner.philosophy,
     modalities: currentPractitioner.modalities.join(', '),
     location: currentPractitioner.location,
+    specialtyFocus: currentPractitioner.specialty.focus,
+    specialtyApproach: currentPractitioner.specialty.approach,
   });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -53,6 +55,14 @@ export function PractitionerProfileForm() {
           <div className="space-y-2">
             <Label htmlFor="philosophy">My Philosophy</Label>
             <Textarea id="philosophy" name="philosophy" value={profile.philosophy} onChange={handleInputChange} rows={5} placeholder="Share your approach to healing..." />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="specialtyFocus">How I Can Help: My Specialty</Label>
+            <Textarea id="specialtyFocus" name="specialtyFocus" value={profile.specialtyFocus} onChange={handleInputChange} rows={3} placeholder="I specialize in helping people who..." />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="specialtyApproach">How I Can Help: My Approach</Label>
+            <Textarea id="specialtyApproach" name="specialtyApproach" value={profile.specialtyApproach} onChange={handleInputChange} rows={3} placeholder="My unique approach is..." />
           </div>
           <div className="space-y-2">
             <Label htmlFor="modalities">Modalities</Label>

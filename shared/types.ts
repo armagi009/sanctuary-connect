@@ -36,6 +36,10 @@ export interface Practitioner {
   rating: number;
   reviewCount: number;
   location: string;
+  specialty: {
+    focus: string;
+    approach: string;
+  };
 }
 export interface Article {
   id: string;

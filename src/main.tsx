@@ -24,6 +24,7 @@ import { ArticlePage } from '@/pages/ArticlePage';
 import { PractitionerDashboardPage } from '@/pages/PractitionerDashboardPage';
 import { SessionPage } from '@/pages/SessionPage';
 import { PractitionerApplicationPage } from '@/pages/PractitionerApplicationPage';
+import { BridgePage } from '@/pages/BridgePage';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "community", element: <CommunityPage /> },
       { path: "community/:articleId", element: <ArticlePage /> },
       { path: "apply", element: <PractitionerApplicationPage /> },
+      { path: "bridge", element: <BridgePage /> },
       {
         element: <ProtectedRoute />,
         children: [

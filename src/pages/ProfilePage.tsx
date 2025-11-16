@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, ShieldCheck, MapPin, Clock } from 'lucide-react';
+import { Star, ShieldCheck, MapPin, Clock, Target, Lightbulb } from 'lucide-react';
 import { MOCK_PRACTITIONERS, MOCK_SESSIONS } from '@/data/mockData';
 import { ReviewCard } from '@/components/ReviewCard';
 import { useReviewStore } from '@/stores/reviewStore';
@@ -54,6 +54,31 @@ export function ProfilePage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">{practitioner.philosophy}</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>How I Can Help</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Target className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">I specialize in helping...</h4>
+                      <p className="text-sm text-muted-foreground">{practitioner.specialty.focus}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Lightbulb className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">My unique approach is...</h4>
+                      <p className="text-sm text-muted-foreground">{practitioner.specialty.approach}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               <Card>

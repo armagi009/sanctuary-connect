@@ -17,6 +17,7 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/discover', label: 'Discover' },
   { to: '/community', label: 'Community' },
+  { to: '/bridge', label: 'Guidance' },
 ];
 export function Header() {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
