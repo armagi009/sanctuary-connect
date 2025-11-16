@@ -7,7 +7,13 @@ import { useBookingStore, SessionOffering } from '@/stores/bookingStore';
 import { useAuthStore } from '@/stores/authStore';
 import { ArrowLeft, CheckCircle, Clock, Calendar as CalendarIcon, User, Tag, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
-import { MOCK_PRACTITIONERS } from '@/data/mockData';
+import type { Practitioner } from '@shared/types';
+// Mock data should be fetched from an API in a real app
+const MOCK_PRACTITIONERS: Practitioner[] = [
+    { id: '1', name: 'Dr. Althea Sol', imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop`, tagline: 'Guiding you to inner peace through mindfulness.', philosophy: 'I believe in a holistic approach to healing, integrating mind, body, and spirit to foster deep, lasting transformation. My work is grounded in compassion, presence, and the belief that everyone holds the innate capacity to heal.', modalities: ['Mindfulness', 'Somatic Healing', 'Reiki', 'Meditation'], certifications: [{ institution: 'Mindful Institute', title: 'Certified Mindfulness Teacher', year: 2018 }, { institution: 'Somatic Experiencing Trauma Institute', title: 'Somatic Healing Practitioner', year: 2020 }], rating: 4.9, reviewCount: 124, location: 'San Francisco, CA' },
+    { id: '2', name: 'Marcus Thorne', imageUrl: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop`, tagline: 'Unlock your potential with shamanic wisdom.', philosophy: 'My practice is rooted in ancient shamanic traditions, helping you connect with your spirit guides and heal ancestral patterns. I serve as a bridge between worlds to bring back wisdom and healing for your soul\'s journey.', modalities: ['Shamanic Journeying', 'Ancestral Healing', 'Tarot', 'Soul Retrieval'], certifications: [{ institution: 'The Shamanic Path', title: 'Master Shamanic Practitioner', year: 2015 }], rating: 5.0, reviewCount: 98, location: 'Asheville, NC' },
+    { id: '3', name: 'Lena Petrova', imageUrl: `https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop`, tagline: 'Somatic healing for embodied wellness.', philosophy: 'Through gentle, body-based practices, we can release trauma and cultivate a profound sense of safety and presence. Healing happens when we learn to listen to the wisdom of the body.', modalities: ['Somatic Healing', 'Yoga Therapy', 'Breathwork'], certifications: [{ institution: 'Embodied Wellness Institute', title: 'Certified Somatic Therapist', year: 2020 }], rating: 4.8, reviewCount: 76, location: 'Online' },
+];
 const availableTimes = ['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM'];
 export function BookingPage() {
   const { practitionerId } = useParams();
@@ -36,7 +42,7 @@ export function BookingPage() {
     setSelectedTime(null);
   };
   const handleConfirmBooking = () => {
-    if (selectedDate && selectedTime && practitioner) {
+    if (selectedDate && selectedTime) {
       const [hours, minutesPart] = selectedTime.split(':');
       const [minutes, ampm] = minutesPart.split(' ');
       let hour = parseInt(hours, 10);
@@ -137,7 +143,7 @@ export function BookingPage() {
                 <h2 className="text-2xl font-bold">Your session is scheduled!</h2>
                 <p className="text-muted-foreground mt-2">
                   You've successfully booked a "{session.title}" session with {practitioner.name} for <br/>
-                  <span className="font-semibold text-foreground">{selectedDate && selectedTime ? `${format(new Date(selectedDate), 'PPP')} at ${selectedTime}` : ''}</span>.
+                  <span className="font-semibold text-foreground">{selectedDate && selectedTime ? `${format(selectedDate, 'PPP')} at ${selectedTime}` : ''}</span>.
                 </p>
                 <div className="mt-8 flex justify-center gap-4">
                   <Button asChild>

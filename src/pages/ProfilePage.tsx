@@ -1,13 +1,18 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, ShieldCheck, MapPin, Calendar, Clock } from 'lucide-react';
+import { Star, ShieldCheck, MapPin, Clock } from 'lucide-react';
 import type { Practitioner } from '@shared/types';
+import { SessionOffering } from '@/stores/bookingStore';
 const MOCK_PRACTITIONERS: Practitioner[] = [
     { id: '1', name: 'Dr. Althea Sol', imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop`, tagline: 'Guiding you to inner peace through mindfulness.', philosophy: 'I believe in a holistic approach to healing, integrating mind, body, and spirit to foster deep, lasting transformation. My work is grounded in compassion, presence, and the belief that everyone holds the innate capacity to heal.', modalities: ['Mindfulness', 'Somatic Healing', 'Reiki', 'Meditation'], certifications: [{ institution: 'Mindful Institute', title: 'Certified Mindfulness Teacher', year: 2018 }, { institution: 'Somatic Experiencing Trauma Institute', title: 'Somatic Healing Practitioner', year: 2020 }], rating: 4.9, reviewCount: 124, location: 'San Francisco, CA' },
     { id: '2', name: 'Marcus Thorne', imageUrl: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop`, tagline: 'Unlock your potential with shamanic wisdom.', philosophy: 'My practice is rooted in ancient shamanic traditions, helping you connect with your spirit guides and heal ancestral patterns. I serve as a bridge between worlds to bring back wisdom and healing for your soul\'s journey.', modalities: ['Shamanic Journeying', 'Ancestral Healing', 'Tarot', 'Soul Retrieval'], certifications: [{ institution: 'The Shamanic Path', title: 'Master Shamanic Practitioner', year: 2015 }], rating: 5.0, reviewCount: 98, location: 'Asheville, NC' },
     { id: '3', name: 'Lena Petrova', imageUrl: `https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop`, tagline: 'Somatic healing for embodied wellness.', philosophy: 'Through gentle, body-based practices, we can release trauma and cultivate a profound sense of safety and presence. Healing happens when we learn to listen to the wisdom of the body.', modalities: ['Somatic Healing', 'Yoga Therapy', 'Breathwork'], certifications: [{ institution: 'Embodied Wellness Institute', title: 'Certified Somatic Therapist', year: 2020 }], rating: 4.8, reviewCount: 76, location: 'Online' },
+];
+const MOCK_SESSIONS: SessionOffering[] = [
+    { title: 'Introductory Consultation', duration: 30, price: 75 },
+    { title: 'Standard Healing Session', duration: 60, price: 150 },
 ];
 export function ProfilePage() {
   const { id } = useParams();
@@ -41,7 +46,9 @@ export function ProfilePage() {
                     <span className="font-bold">{practitioner.rating.toFixed(1)}</span>
                     <span className="text-muted-foreground">({practitioner.reviewCount} reviews)</span>
                   </div>
-                  <Button size="lg" className="w-full mt-6">Book a Session</Button>
+                  <Button asChild size="lg" className="w-full mt-6">
+                    <Link to={`/book/${practitioner.id}`} state={{ session: MOCK_SESSIONS[1] }}>Book a Session</Link>
+                  </Button>
                 </CardContent>
               </Card>
             </div>
@@ -90,32 +97,23 @@ export function ProfilePage() {
                   <CardTitle>Session Offerings</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="flex justify-between items-start p-4 border rounded-lg">
-                        <div>
-                            <h4 className="font-semibold">Introductory Consultation</h4>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> 30 min</span>
-                                <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Online</span>
+                    {MOCK_SESSIONS.map((session, index) => (
+                        <div key={index} className="flex justify-between items-start p-4 border rounded-lg">
+                            <div>
+                                <h4 className="font-semibold">{session.title}</h4>
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                                    <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {session.duration} min</span>
+                                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Online</span>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="font-bold text-lg">${session.price}</p>
+                                <Button asChild size="sm" className="mt-1">
+                                    <Link to={`/book/${practitioner.id}`} state={{ session }}>Book Now</Link>
+                                </Button>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <p className="font-bold text-lg">$75</p>
-                            <Button size="sm" className="mt-1">Book Now</Button>
-                        </div>
-                    </div>
-                    <div className="flex justify-between items-start p-4 border rounded-lg">
-                        <div>
-                            <h4 className="font-semibold">Standard Healing Session</h4>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> 60 min</span>
-                                <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> Online</span>
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <p className="font-bold text-lg">$150</p>
-                            <Button size="sm" className="mt-1">Book Now</Button>
-                        </div>
-                    </div>
+                    ))}
                 </CardContent>
               </Card>
             </div>
