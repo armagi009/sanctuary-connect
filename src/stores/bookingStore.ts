@@ -11,6 +11,7 @@ export interface BookedSession {
   practitioner: Practitioner;
   session: SessionOffering;
   date: Date;
+  seeker?: { id: string; name: string; };
 }
 interface BookingState {
   bookedSessions: BookedSession[];

@@ -8,10 +8,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Search, X, Frown } from 'lucide-react';
-import { MOCK_PRACTITIONERS } from '@/data/mockData';
-const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))].sort();
+import { usePractitioners } from '@/hooks/usePractitioners';
+import { Skeleton } from '@/components/ui/skeleton';
 const MAX_PRICE = 300; // Assuming max price for slider
 export function DiscoveryPage() {
+  const { data: practitioners, isLoading } = usePractitioners();
   const [searchParams, setSearchParams] = useSearchParams();
   const [nameQuery, setNameQuery] = useState('');
   const [keywordQuery, setKeywordQuery] = useState(searchParams.get('query') || '');
@@ -19,25 +20,21 @@ export function DiscoveryPage() {
     new Set(searchParams.getAll('modality'))
   );
   const [priceRange, setPriceRange] = useState([0, MAX_PRICE]);
-  // Effect to sync state to URL params
+  const ALL_MODALITIES = useMemo(() => 
+    [...new Set(practitioners?.flatMap(p => p.modalities) || [])].sort(),
+    [practitioners]
+  );
   useEffect(() => {
     const params = new URLSearchParams();
-    if (keywordQuery) {
-      params.set('query', keywordQuery);
-    }
-    selectedModalities.forEach(modality => {
-      params.append('modality', modality);
-    });
+    if (keywordQuery) params.set('query', keywordQuery);
+    selectedModalities.forEach(modality => params.append('modality', modality));
     setSearchParams(params, { replace: true });
   }, [keywordQuery, selectedModalities, setSearchParams]);
   const handleModalityChange = (modality: string, checked: boolean) => {
     setSelectedModalities(prev => {
       const newSet = new Set(prev);
-      if (checked) {
-        newSet.add(modality);
-      } else {
-        newSet.delete(modality);
-      }
+      if (checked) newSet.add(modality);
+      else newSet.delete(modality);
       return newSet;
     });
   };
@@ -48,19 +45,19 @@ export function DiscoveryPage() {
     setPriceRange([0, MAX_PRICE]);
   };
   const filteredPractitioners = useMemo(() => {
-    return MOCK_PRACTITIONERS.filter(p => {
+    if (!practitioners) return [];
+    return practitioners.filter(p => {
       const nameMatch = p.name.toLowerCase().includes(nameQuery.toLowerCase());
       const modalityMatch = selectedModalities.size === 0 || p.modalities.some(m => selectedModalities.has(m));
       const keywordMatch = !keywordQuery ||
         p.philosophy.toLowerCase().includes(keywordQuery.toLowerCase()) ||
         p.specialty.focus.toLowerCase().includes(keywordQuery.toLowerCase()) ||
         p.specialty.approach.toLowerCase().includes(keywordQuery.toLowerCase()) ||
-        p.tagline.toLowerCase().includes(keywordQuery.toLowerCase());
-      // Mock price filter
-      const priceMatch = true;
-      return nameMatch && modalityMatch && keywordMatch && priceMatch;
+        p.tagline.toLowerCase().includes(keywordQuery.toLowerCase()) ||
+        p.modalities.some(m => m.toLowerCase().includes(keywordQuery.toLowerCase()));
+      return nameMatch && modalityMatch && keywordMatch;
     });
-  }, [nameQuery, keywordQuery, selectedModalities]);
+  }, [nameQuery, keywordQuery, selectedModalities, practitioners]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-12">
@@ -71,7 +68,6 @@ export function DiscoveryPage() {
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-          {/* Filters Sidebar */}
           <aside className="w-full md:w-1/4 lg:w-1/5">
             <div className="sticky top-24 space-y-8">
               <div className="flex justify-between items-center">
@@ -125,12 +121,21 @@ export function DiscoveryPage() {
               </Accordion>
             </div>
           </aside>
-          {/* Results Grid */}
           <main className="w-full md:w-3/4 lg:w-4/5">
             <div className="mb-4">
-              <p className="text-sm text-muted-foreground">{filteredPractitioners.length} practitioners found</p>
+              <p className="text-sm text-muted-foreground">{isLoading ? 'Loading...' : `${filteredPractitioners.length} practitioners found`}</p>
             </div>
-            {filteredPractitioners.length > 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="aspect-[4/3] w-full" />
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            ) : filteredPractitioners.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredPractitioners.map((practitioner) => (
                   <PractitionerCard key={practitioner.id} practitioner={practitioner} />

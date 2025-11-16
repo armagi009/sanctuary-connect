@@ -1,11 +1,22 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, ArrowRight, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react';
 import { PractitionerCard } from '@/components/PractitionerCard';
-import { MOCK_PRACTITIONERS } from '@/data/mockData';
+import { usePractitioners } from '@/hooks/usePractitioners';
+import { Skeleton } from '@/components/ui/skeleton';
 export function HomePage() {
-  const featuredPractitioners = MOCK_PRACTITIONERS.slice(0, 3);
+  const { data: practitioners, isLoading } = usePractitioners();
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/discover?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+  const featuredPractitioners = practitioners?.slice(0, 3) || [];
   return (
     <div className="bg-background text-foreground">
       {/* Hero Section */}
@@ -19,18 +30,21 @@ export function HomePage() {
             <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
               Connect with verified, compassionate practitioners for spiritual guidance, meditation, and holistic healing services.
             </p>
-            <div className="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-4">
+            <form onSubmit={handleSearchSubmit} className="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-4">
               <div className="relative flex-grow">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input placeholder="Search by modality (e.g., Reiki, Tarot)" className="pl-12 h-12 text-base" />
+                <Input
+                  placeholder="Search by modality (e.g., Reiki, Tarot)"
+                  className="pl-12 h-12 text-base"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <Button size="lg" className="h-12" asChild>
-                <Link to="/discover">
-                  Discover Practitioners
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+              <Button type="submit" size="lg" className="h-12">
+                Discover Practitioners
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-            </div>
+            </form>
           </div>
         </div>
       </section>
@@ -84,9 +98,19 @@ export function HomePage() {
             </p>
           </div>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredPractitioners.map((practitioner) => (
-              <PractitionerCard key={practitioner.id} practitioner={practitioner} />
-            ))}
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="aspect-[4/3] w-full" />
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))
+            ) : (
+              featuredPractitioners.map((practitioner) => (
+                <PractitionerCard key={practitioner.id} practitioner={practitioner} />
+              ))
+            )}
           </div>
           <div className="mt-12 text-center">
             <Button asChild size="lg" variant="outline">
