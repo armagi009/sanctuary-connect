@@ -7,15 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Search, X } from 'lucide-react';
-import type { Practitioner } from '@shared/types';
-const MOCK_PRACTITIONERS: Practitioner[] = [
-  { id: '1', name: 'Dr. Althea Sol', imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop`, tagline: 'Guiding you to inner peace through mindfulness.', philosophy: '', modalities: ['Mindfulness', 'Somatic Healing', 'Reiki'], certifications: [], rating: 4.9, reviewCount: 124, location: 'San Francisco, CA' },
-  { id: '2', name: 'Marcus Thorne', imageUrl: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop`, tagline: 'Unlock your potential with shamanic wisdom.', philosophy: '', modalities: ['Shamanic Journeying', 'Ancestral Healing', 'Tarot'], certifications: [], rating: 5.0, reviewCount: 98, location: 'Asheville, NC' },
-  { id: '3', name: 'Lena Petrova', imageUrl: `https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop`, tagline: 'Somatic healing for embodied wellness.', philosophy: '', modalities: ['Somatic Healing', 'Yoga Therapy', 'Breathwork'], certifications: [], rating: 4.8, reviewCount: 76, location: 'Online' },
-  { id: '4', name: 'Kenji Tanaka', imageUrl: `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop`, tagline: 'Mastering the art of Reiki energy.', philosophy: '', modalities: ['Reiki', 'Meditation'], certifications: [], rating: 4.9, reviewCount: 150, location: 'Kyoto, Japan' },
-  { id: '5', name: 'Sofia Rossi', imageUrl: `https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop`, tagline: 'Clarity and insight through Tarot.', philosophy: '', modalities: ['Tarot', 'Astrology'], certifications: [], rating: 4.7, reviewCount: 210, location: 'New York, NY' },
-  { id: '6', name: 'David Chen', imageUrl: `https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop`, tagline: 'Mindfulness for the modern world.', philosophy: '', modalities: ['Mindfulness', 'Coaching'], certifications: [], rating: 4.8, reviewCount: 88, location: 'Online' },
-];
+import { MOCK_PRACTITIONERS } from '@/data/mockData';
 const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))];
 export function DiscoveryPage() {
   const [priceRange, setPriceRange] = useState([20, 150]);

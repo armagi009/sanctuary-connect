@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { MOCK_ARTICLES } from '@/pages/CommunityPage'; // Assuming mock data is exported from CommunityPage
+import { MOCK_ARTICLES } from '@/data/mockData';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

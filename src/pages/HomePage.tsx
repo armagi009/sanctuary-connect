@@ -3,46 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, ArrowRight, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react';
 import { PractitionerCard } from '@/components/PractitionerCard';
-import type { Practitioner } from '@shared/types';
-const MOCK_PRACTITIONERS: Practitioner[] = [
-  {
-    id: '1',
-    name: 'Dr. Althea Sol',
-    imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop`,
-    tagline: 'Guiding you to inner peace through mindfulness.',
-    philosophy: 'I believe in a holistic approach to healing, integrating mind, body, and spirit to foster deep, lasting transformation.',
-    modalities: ['Mindfulness', 'Somatic Healing', 'Reiki'],
-    certifications: [{ institution: 'Mindful Institute', title: 'Certified Mindfulness Teacher', year: 2018 }],
-    rating: 4.9,
-    reviewCount: 124,
-    location: 'San Francisco, CA'
-  },
-  {
-    id: '2',
-    name: 'Marcus Thorne',
-    imageUrl: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop`,
-    tagline: 'Unlock your potential with shamanic wisdom.',
-    philosophy: 'My practice is rooted in ancient shamanic traditions, helping you connect with your spirit guides and heal ancestral patterns.',
-    modalities: ['Shamanic Journeying', 'Ancestral Healing', 'Tarot'],
-    certifications: [{ institution: 'The Shamanic Path', title: 'Master Shamanic Practitioner', year: 2015 }],
-    rating: 5.0,
-    reviewCount: 98,
-    location: 'Asheville, NC'
-  },
-  {
-    id: '3',
-    name: 'Lena Petrova',
-    imageUrl: `https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop`,
-    tagline: 'Somatic healing for embodied wellness.',
-    philosophy: 'Through gentle, body-based practices, we can release trauma and cultivate a profound sense of safety and presence.',
-    modalities: ['Somatic Healing', 'Yoga Therapy', 'Breathwork'],
-    certifications: [{ institution: 'Embodied Wellness Institute', title: 'Certified Somatic Therapist', year: 2020 }],
-    rating: 4.8,
-    reviewCount: 76,
-    location: 'Online'
-  },
-];
+import { MOCK_PRACTITIONERS } from '@/data/mockData';
 export function HomePage() {
+  const featuredPractitioners = MOCK_PRACTITIONERS.slice(0, 3);
   return (
     <div className="bg-background text-foreground">
       {/* Hero Section */}
@@ -61,9 +24,11 @@ export function HomePage() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input placeholder="Search by modality (e.g., Reiki, Tarot)" className="pl-12 h-12 text-base" />
               </div>
-              <Button size="lg" className="h-12">
-                Discover Practitioners
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" className="h-12" asChild>
+                <Link to="/discover">
+                  Discover Practitioners
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -119,7 +84,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {MOCK_PRACTITIONERS.map((practitioner) => (
+            {featuredPractitioners.map((practitioner) => (
               <PractitionerCard key={practitioner.id} practitioner={practitioner} />
             ))}
           </div>
@@ -144,7 +109,7 @@ export function HomePage() {
               <Link to="/discover">Find a Practitioner</Link>
             </Button>
             <Button asChild size="lg" variant="secondary">
-              <Link to="/join">Join as a Practitioner</Link>
+              <Link to="#">Join as a Practitioner</Link>
             </Button>
           </div>
         </div>

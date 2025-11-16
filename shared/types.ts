@@ -48,3 +48,14 @@ export interface Article {
   excerpt: string;
   content: string; // Could be markdown or HTML
 }
+export interface Review {
+  id: string;
+  practitionerId: string;
+  reviewerName: string;
+  reviewerImageUrl: string;
+  rating: number;
+  reviewDate: string; // ISO string
+  presence: string;
+  insight: string;
+  recommendation: string;
+}

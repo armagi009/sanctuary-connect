@@ -3,42 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, Mic, Headphones, ArrowRight } from 'lucide-react';
-import type { Article } from '@shared/types';
-export const MOCK_ARTICLES: Article[] = [
-  {
-    id: '1',
-    category: 'Mindfulness',
-    title: 'The Art of Presence: A Guide to Mindful Living',
-    imageUrl: 'https://images.unsplash.com/photo-1474418397713-7ede21d49118?q=80&w=1200&auto=format&fit=crop',
-    authorName: 'Dr. Althea Sol',
-    authorImageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-    publishedDate: '2024-06-15T10:00:00Z',
-    excerpt: 'Discover practical techniques to cultivate mindfulness in your daily life, reducing stress and enhancing your overall well-being. This guide offers simple steps to anchor yourself in the present moment.',
-    content: 'The full content of the article about mindful living goes here. It would be a longer text, possibly formatted with Markdown or HTML, detailing various mindfulness practices and their benefits.'
-  },
-  {
-    id: '2',
-    category: 'Shamanism',
-    title: 'Connecting with Spirit Guides in Shamanic Journeying',
-    imageUrl: 'https://images.unsplash.com/photo-1505524252386-591054539e45?q=80&w=1200&auto=format&fit=crop',
-    authorName: 'Marcus Thorne',
-    authorImageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200&auto=format&fit=crop',
-    publishedDate: '2024-06-12T14:30:00Z',
-    excerpt: 'Learn the fundamentals of shamanic journeying and how to establish a profound connection with your spirit guides for wisdom, healing, and guidance on your life path.',
-    content: 'This article would delve into the practice of shamanic journeying, explaining the cosmology, the role of spirit animals and guides, and providing a step-by-step guide for beginners.'
-  },
-  {
-    id: '3',
-    category: 'Somatic Healing',
-    title: 'Listening to Your Body: An Introduction to Somatic Healing',
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop',
-    authorName: 'Lena Petrova',
-    authorImageUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop',
-    publishedDate: '2024-06-10T09:00:00Z',
-    excerpt: 'Somatic healing is a powerful approach that helps release trauma and stress stored in the body. This article explores the core principles and offers a simple exercise to begin your practice.',
-    content: 'The full article would explain the theory behind somatic experiencing, discuss the nervous system\'s role in trauma, and provide several gentle, body-based exercises for readers to try.'
-  },
-];
+import { MOCK_ARTICLES } from '@/data/mockData';
 export function CommunityPage() {
   return (
     <div className="bg-background text-foreground">
