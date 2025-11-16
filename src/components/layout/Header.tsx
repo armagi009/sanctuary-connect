@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Feather, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, Feather, User, LogOut, LayoutDashboard, Briefcase } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuthStore } from '@/stores/authStore';
 import {
@@ -75,10 +75,10 @@ export function Header() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard"><LayoutDashboard className="mr-2 h-4 w-4" /><span>Dashboard</span></Link>
+                      <Link to="/dashboard"><LayoutDashboard className="mr-2 h-4 w-4" /><span>Seeker Dashboard</span></Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/dashboard"><User className="mr-2 h-4 w-4" /><span>Profile</span></Link>
+                      <Link to="/practitioner-dashboard"><Briefcase className="mr-2 h-4 w-4" /><span>Practitioner Hub</span></Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
@@ -126,7 +126,8 @@ export function Header() {
                     <div className="border-t pt-4 flex flex-col space-y-2">
                       {isLoggedIn ? (
                         <>
-                          <Button asChild variant="ghost"><Link to="/dashboard">Dashboard</Link></Button>
+                          <Button asChild variant="ghost"><Link to="/dashboard">Seeker Dashboard</Link></Button>
+                          <Button asChild variant="ghost"><Link to="/practitioner-dashboard">Practitioner Hub</Link></Button>
                           <Button onClick={handleLogout}>Log Out</Button>
                         </>
                       ) : (

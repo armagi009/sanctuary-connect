@@ -21,6 +21,7 @@ import { CommunityPage } from '@/pages/CommunityPage';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { BookingPage } from '@/pages/BookingPage';
 import { ArticlePage } from '@/pages/ArticlePage';
+import { PractitionerDashboardPage } from '@/pages/PractitionerDashboardPage';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: "dashboard", element: <DashboardPage /> },
+          { path: "practitioner-dashboard", element: <PractitionerDashboardPage /> },
           { path: "book/:practitionerId", element: <BookingPage /> },
         ]
       },

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { PractitionerCard } from '@/components/PractitionerCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +6,40 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Search, X } from 'lucide-react';
+import { Search, X, Frown } from 'lucide-react';
 import { MOCK_PRACTITIONERS } from '@/data/mockData';
-const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))];
+const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))].sort();
+const MAX_PRICE = 300; // Assuming max price for slider
 export function DiscoveryPage() {
-  const [priceRange, setPriceRange] = useState([20, 150]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedModalities, setSelectedModalities] = useState<Set<string>>(new Set());
+  const [priceRange, setPriceRange] = useState([0, MAX_PRICE]);
+  const handleModalityChange = (modality: string, checked: boolean) => {
+    setSelectedModalities(prev => {
+      const newSet = new Set(prev);
+      if (checked) {
+        newSet.add(modality);
+      } else {
+        newSet.delete(modality);
+      }
+      return newSet;
+    });
+  };
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedModalities(new Set());
+    setPriceRange([0, MAX_PRICE]);
+  };
+  const filteredPractitioners = useMemo(() => {
+    return MOCK_PRACTITIONERS.filter(p => {
+      const nameMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const modalityMatch = selectedModalities.size === 0 || p.modalities.some(m => selectedModalities.has(m));
+      // This is a mock filter as price is not on practitioner object.
+      // We'll just let this pass for now. A real implementation would check session prices.
+      const priceMatch = true; 
+      return nameMatch && modalityMatch && priceMatch;
+    });
+  }, [searchQuery, selectedModalities, priceRange]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-12">
@@ -26,7 +55,7 @@ export function DiscoveryPage() {
             <div className="sticky top-24 space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">Filters</h2>
-                <Button variant="ghost" size="sm" className="text-sm">
+                <Button variant="ghost" size="sm" className="text-sm" onClick={clearFilters}>
                   <X className="w-4 h-4 mr-1" /> Clear all
                 </Button>
               </div>
@@ -34,18 +63,28 @@ export function DiscoveryPage() {
                 <Label htmlFor="search" className="sr-only">Search</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input id="search" placeholder="Search by name..." className="pl-10" />
+                  <Input 
+                    id="search" 
+                    placeholder="Search by name..." 
+                    className="pl-10" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
               </div>
-              <Accordion type="multiple" defaultValue={['modalities', 'price']} className="w-full">
+              <Accordion type="multiple" defaultValue={['modalities']} className="w-full">
                 <AccordionItem value="modalities">
                   <AccordionTrigger className="text-base font-medium">Modalities</AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                       {ALL_MODALITIES.map(modality => (
                         <div key={modality} className="flex items-center space-x-2">
-                          <Checkbox id={`modality-${modality}`} />
-                          <Label htmlFor={`modality-${modality}`} className="font-normal">{modality}</Label>
+                          <Checkbox 
+                            id={`modality-${modality}`} 
+                            checked={selectedModalities.has(modality)}
+                            onCheckedChange={(checked) => handleModalityChange(modality, !!checked)}
+                          />
+                          <Label htmlFor={`modality-${modality}`} className="font-normal cursor-pointer">{modality}</Label>
                         </div>
                       ))}
                     </div>
@@ -56,8 +95,8 @@ export function DiscoveryPage() {
                   <AccordionContent>
                     <div className="p-1">
                       <Slider
-                        defaultValue={priceRange}
-                        max={300}
+                        value={priceRange}
+                        max={MAX_PRICE}
                         step={10}
                         onValueChange={setPriceRange}
                       />
@@ -74,16 +113,25 @@ export function DiscoveryPage() {
           {/* Results Grid */}
           <main className="w-full md:w-3/4 lg:w-4/5">
             <div className="mb-4">
-              <p className="text-sm text-muted-foreground">{MOCK_PRACTITIONERS.length} practitioners found</p>
+              <p className="text-sm text-muted-foreground">{filteredPractitioners.length} practitioners found</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {MOCK_PRACTITIONERS.map((practitioner) => (
-                <PractitionerCard key={practitioner.id} practitioner={practitioner} />
-              ))}
-            </div>
-            <div className="mt-12 flex justify-center">
+            {filteredPractitioners.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPractitioners.map((practitioner) => (
+                  <PractitionerCard key={practitioner.id} practitioner={practitioner} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center text-muted-foreground py-24 border-2 border-dashed rounded-lg">
+                <Frown className="w-16 h-16 mb-4" />
+                <h3 className="text-xl font-semibold">No Practitioners Found</h3>
+                <p className="mt-2 max-w-xs">Try adjusting your filters or clearing them to see all available practitioners.</p>
+                <Button variant="outline" className="mt-6" onClick={clearFilters}>Clear Filters</Button>
+              </div>
+            )}
+            {/* <div className="mt-12 flex justify-center">
               <Button variant="outline">Load More</Button>
-            </div>
+            </div> */}
           </main>
         </div>
       </div>

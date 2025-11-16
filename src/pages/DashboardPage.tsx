@@ -8,7 +8,7 @@ import { Calendar, User, Settings, Clock, Video, Sparkles, History, MessageSquar
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ReviewForm } from '@/components/ReviewForm';
 import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
@@ -48,8 +48,8 @@ export function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8 md:py-12">
           <header className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome, {user.name}</h1>
-            <p className="text-muted-foreground mt-1">Manage your sessions, profile, and account settings.</p>
+            <h1 className="text-3xl font-bold tracking-tight">Seeker Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Welcome, {user.name}. Manage your sessions, profile, and account settings.</p>
           </header>
           <Tabs defaultValue="upcoming" className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:w-auto">
