@@ -1,6 +1,6 @@
 # Sanctuary Connect
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/armagi009/sanctuary-connect)
 
 > A holistic platform for discovering and connecting with verified practitioners for spirituality, meditation, and healing services.
 
@@ -91,4 +91,4 @@ This project is configured for seamless deployment to Cloudflare Pages and Worke
 
 Alternatively, you can deploy directly from your GitHub repository using the button below.
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/armagi009/sanctuary-connect)
