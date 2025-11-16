@@ -20,6 +20,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { CommunityPage } from '@/pages/CommunityPage';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { BookingPage } from '@/pages/BookingPage';
+import { ArticlePage } from '@/pages/ArticlePage';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignUpPage /> },
       { path: "community", element: <CommunityPage /> },
+      { path: "community/:articleId", element: <ArticlePage /> },
       {
         element: <ProtectedRoute />,
         children: [

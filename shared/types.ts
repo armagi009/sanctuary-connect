@@ -37,3 +37,14 @@ export interface Practitioner {
   reviewCount: number;
   location: string;
 }
+export interface Article {
+  id: string;
+  category: string;
+  title: string;
+  imageUrl: string;
+  authorName: string;
+  authorImageUrl: string;
+  publishedDate: string; // ISO string
+  excerpt: string;
+  content: string; // Could be markdown or HTML
+}
