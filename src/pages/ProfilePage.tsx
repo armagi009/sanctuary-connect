@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, ShieldCheck, MapPin, Clock } from 'lucide-react';
-import { MOCK_PRACTITIONERS, MOCK_SESSIONS, MOCK_REVIEWS } from '@/data/mockData';
+import { MOCK_PRACTITIONERS, MOCK_SESSIONS } from '@/data/mockData';
 import { ReviewCard } from '@/components/ReviewCard';
+import { useReviewStore } from '@/stores/reviewStore';
 export function ProfilePage() {
   const { id } = useParams();
   const practitioner = MOCK_PRACTITIONERS.find(p => p.id === id);
-  const reviews = MOCK_REVIEWS.filter(r => r.practitionerId === id);
+  const allReviews = useReviewStore((state) => state.reviews);
+  const reviews = allReviews.filter(r => r.practitionerId === id);
   if (!practitioner) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +38,7 @@ export function ProfilePage() {
                   <div className="flex items-center justify-center gap-1 mt-3">
                     <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                     <span className="font-bold">{practitioner.rating.toFixed(1)}</span>
-                    <span className="text-muted-foreground">({practitioner.reviewCount} reviews)</span>
+                    <span className="text-muted-foreground">({practitioner.reviewCount + reviews.length})</span>
                   </div>
                   <Button asChild size="lg" className="w-full mt-6">
                     <Link to={`/book/${practitioner.id}`} state={{ session: MOCK_SESSIONS[1] }}>Book a Session</Link>
