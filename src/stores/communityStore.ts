@@ -7,8 +7,6 @@ export type NewArticle = Omit<Article, 'id' | 'publishedDate' | 'authorName' | '
 interface CommunityState {
   articles: Article[];
   addArticle: (article: NewArticle) => void;
-  updateArticle: (articleId: string, updatedData: NewArticle) => void;
-  deleteArticle: (articleId: string) => void;
 }
 export const useCommunityStore = create<CommunityState>()(
   persist(
@@ -16,6 +14,7 @@ export const useCommunityStore = create<CommunityState>()(
       articles: MOCK_ARTICLES,
       addArticle: (newArticle) => {
         const user = useAuthStore.getState().user;
+        // In a real app, author info would come from the logged-in practitioner's profile
         const authorName = user?.name || 'A Practitioner';
         const authorImageUrl = `https://api.dicebear.com/8.x/initials/svg?seed=${authorName}`;
         set((state) => ({
@@ -29,20 +28,6 @@ export const useCommunityStore = create<CommunityState>()(
               authorImageUrl,
             },
           ],
-        }));
-      },
-      updateArticle: (articleId, updatedData) => {
-        set((state) => ({
-          articles: state.articles.map((article) =>
-            article.id === articleId
-              ? { ...article, ...updatedData, publishedDate: new Date().toISOString() } // Update publish date on edit
-              : article
-          ),
-        }));
-      },
-      deleteArticle: (articleId) => {
-        set((state) => ({
-          articles: state.articles.filter((article) => article.id !== articleId),
         }));
       },
     }),

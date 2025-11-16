@@ -4,6 +4,8 @@ import { User, Calendar, Video, FileText } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { PractitionerProfileForm } from '@/components/PractitionerProfileForm';
 import { PractitionerSessionList } from '@/components/PractitionerSessionList';
+import { PractitionerAvailability } from '@/components/PractitionerAvailability';
+import { PractitionerContent } from '@/components/PractitionerContent';
 export function PractitionerDashboardPage() {
   const user = useAuthStore((state) => state.user);
   if (!user) {
@@ -30,26 +32,10 @@ export function PractitionerDashboardPage() {
             <PractitionerSessionList />
           </TabsContent>
           <TabsContent value="availability" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Availability</CardTitle>
-                <CardDescription>Set your schedule so seekers can book sessions with you.</CardDescription>
-              </CardHeader>
-              <CardContent className="text-center text-muted-foreground py-12">
-                <p>Calendar and availability management coming soon.</p>
-              </CardContent>
-            </Card>
+            <PractitionerAvailability />
           </TabsContent>
           <TabsContent value="content" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Community Content</CardTitle>
-                <CardDescription>Share your wisdom by writing articles or recording guided meditations.</CardDescription>
-              </CardHeader>
-              <CardContent className="text-center text-muted-foreground py-12">
-                <p>Content creation and management tools coming soon.</p>
-              </CardContent>
-            </Card>
+            <PractitionerContent />
           </TabsContent>
         </Tabs>
       </div>

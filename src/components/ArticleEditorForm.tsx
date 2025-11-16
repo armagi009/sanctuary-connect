@@ -1,56 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useCommunityStore, NewArticle } from '@/stores/communityStore';
-import type { Article } from '@shared/types';
 import { toast } from 'sonner';
 interface ArticleEditorFormProps {
   onSave: () => void;
-  articleToEdit?: Article;
 }
-const INITIAL_STATE: NewArticle = {
-  title: '',
-  category: '',
-  excerpt: '',
-  content: '',
-  imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1200&auto=format&fit=crop',
-};
-export function ArticleEditorForm({ onSave, articleToEdit }: ArticleEditorFormProps) {
+export function ArticleEditorForm({ onSave }: ArticleEditorFormProps) {
   const addArticle = useCommunityStore((state) => state.addArticle);
-  const updateArticle = useCommunityStore((state) => state.updateArticle);
-  const [article, setArticle] = useState<NewArticle>(INITIAL_STATE);
-  useEffect(() => {
-    if (articleToEdit) {
-      setArticle({
-        title: articleToEdit.title,
-        category: articleToEdit.category,
-        excerpt: articleToEdit.excerpt,
-        content: articleToEdit.content,
-        imageUrl: articleToEdit.imageUrl,
-      });
-    } else {
-      setArticle(INITIAL_STATE);
-    }
-  }, [articleToEdit]);
+  const [article, setArticle] = useState<NewArticle>({
+    title: '',
+    category: '',
+    excerpt: '',
+    content: '',
+    imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=1200&auto=format&fit=crop', // Placeholder image
+  });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setArticle(prev => ({ ...prev, [name]: value }));
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (articleToEdit) {
-      updateArticle(articleToEdit.id, article);
-      toast.success('Article updated!', {
-        description: 'Your changes have been saved.',
-      });
-    } else {
-      addArticle(article);
-      toast.success('Article published!', {
-        description: 'Your new article is now available in the Community Hub.',
-      });
-    }
+    addArticle(article);
+    toast.success('Article published!', {
+      description: 'Your new article is now available in the Community Hub.',
+    });
     onSave();
   };
   return (
@@ -72,7 +48,7 @@ export function ArticleEditorForm({ onSave, articleToEdit }: ArticleEditorFormPr
         <Textarea id="content" name="content" value={article.content} onChange={handleInputChange} rows={8} placeholder="Write your full article here. You can use Markdown." required />
       </div>
       <div className="flex justify-end">
-        <Button type="submit">{articleToEdit ? 'Save Changes' : 'Publish Article'}</Button>
+        <Button type="submit">Publish Article</Button>
       </div>
     </form>
   );
