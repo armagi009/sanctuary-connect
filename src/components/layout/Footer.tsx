@@ -23,13 +23,14 @@ export function Footer() {
             <h3 className="text-sm font-semibold tracking-wider uppercase">Seekers</h3>
             <ul className="mt-4 space-y-2">
               <li><Link to="/discover" className="text-sm text-muted-foreground hover:text-primary">Find a Practitioner</Link></li>
-              <li><Link to="/community" className="text-sm text-muted-foreground hover:text-primary">Community</Link></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary">How it Works</a></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary">Community</a></li>
             </ul>
           </div>
           <div>
             <h3 className="text-sm font-semibold tracking-wider uppercase">Practitioners</h3>
             <ul className="mt-4 space-y-2">
-              <li><Link to="/apply" className="text-sm text-muted-foreground hover:text-primary">Join as a Practitioner</Link></li>
+              <li><a href="#" className="text-sm text-muted-foreground hover:text-primary">Join as a Practitioner</a></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-primary">Our Pledge</a></li>
               <li><a href="#" className="text-sm text-muted-foreground hover:text-primary">Resources</a></li>
             </ul>

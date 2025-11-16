@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { PractitionerCard } from '@/components/PractitionerCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,57 +6,19 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Search, X, Frown } from 'lucide-react';
-import { usePractitioners } from '@/hooks/usePractitioners';
-import { Skeleton } from '@/components/ui/skeleton';
-const MAX_PRICE = 300; // Assuming max price for slider
+import { Search, X } from 'lucide-react';
+import type { Practitioner } from '@shared/types';
+const MOCK_PRACTITIONERS: Practitioner[] = [
+  { id: '1', name: 'Dr. Althea Sol', imageUrl: `https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop`, tagline: 'Guiding you to inner peace through mindfulness.', philosophy: '', modalities: ['Mindfulness', 'Somatic Healing', 'Reiki'], certifications: [], rating: 4.9, reviewCount: 124, location: 'San Francisco, CA' },
+  { id: '2', name: 'Marcus Thorne', imageUrl: `https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop`, tagline: 'Unlock your potential with shamanic wisdom.', philosophy: '', modalities: ['Shamanic Journeying', 'Ancestral Healing', 'Tarot'], certifications: [], rating: 5.0, reviewCount: 98, location: 'Asheville, NC' },
+  { id: '3', name: 'Lena Petrova', imageUrl: `https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop`, tagline: 'Somatic healing for embodied wellness.', philosophy: '', modalities: ['Somatic Healing', 'Yoga Therapy', 'Breathwork'], certifications: [], rating: 4.8, reviewCount: 76, location: 'Online' },
+  { id: '4', name: 'Kenji Tanaka', imageUrl: `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop`, tagline: 'Mastering the art of Reiki energy.', philosophy: '', modalities: ['Reiki', 'Meditation'], certifications: [], rating: 4.9, reviewCount: 150, location: 'Kyoto, Japan' },
+  { id: '5', name: 'Sofia Rossi', imageUrl: `https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop`, tagline: 'Clarity and insight through Tarot.', philosophy: '', modalities: ['Tarot', 'Astrology'], certifications: [], rating: 4.7, reviewCount: 210, location: 'New York, NY' },
+  { id: '6', name: 'David Chen', imageUrl: `https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=800&auto=format&fit=crop`, tagline: 'Mindfulness for the modern world.', philosophy: '', modalities: ['Mindfulness', 'Coaching'], certifications: [], rating: 4.8, reviewCount: 88, location: 'Online' },
+];
+const ALL_MODALITIES = [...new Set(MOCK_PRACTITIONERS.flatMap(p => p.modalities))];
 export function DiscoveryPage() {
-  const { data: practitioners, isLoading } = usePractitioners();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [nameQuery, setNameQuery] = useState('');
-  const [keywordQuery, setKeywordQuery] = useState(searchParams.get('query') || '');
-  const [selectedModalities, setSelectedModalities] = useState<Set<string>>(
-    new Set(searchParams.getAll('modality'))
-  );
-  const [priceRange, setPriceRange] = useState([0, MAX_PRICE]);
-  const ALL_MODALITIES = useMemo(() => 
-    [...new Set(practitioners?.flatMap(p => p.modalities) || [])].sort(),
-    [practitioners]
-  );
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (keywordQuery) params.set('query', keywordQuery);
-    selectedModalities.forEach(modality => params.append('modality', modality));
-    setSearchParams(params, { replace: true });
-  }, [keywordQuery, selectedModalities, setSearchParams]);
-  const handleModalityChange = (modality: string, checked: boolean) => {
-    setSelectedModalities(prev => {
-      const newSet = new Set(prev);
-      if (checked) newSet.add(modality);
-      else newSet.delete(modality);
-      return newSet;
-    });
-  };
-  const clearFilters = () => {
-    setNameQuery('');
-    setKeywordQuery('');
-    setSelectedModalities(new Set());
-    setPriceRange([0, MAX_PRICE]);
-  };
-  const filteredPractitioners = useMemo(() => {
-    if (!practitioners) return [];
-    return practitioners.filter(p => {
-      const nameMatch = p.name.toLowerCase().includes(nameQuery.toLowerCase());
-      const modalityMatch = selectedModalities.size === 0 || p.modalities.some(m => selectedModalities.has(m));
-      const keywordMatch = !keywordQuery ||
-        p.philosophy.toLowerCase().includes(keywordQuery.toLowerCase()) ||
-        p.specialty.focus.toLowerCase().includes(keywordQuery.toLowerCase()) ||
-        p.specialty.approach.toLowerCase().includes(keywordQuery.toLowerCase()) ||
-        p.tagline.toLowerCase().includes(keywordQuery.toLowerCase()) ||
-        p.modalities.some(m => m.toLowerCase().includes(keywordQuery.toLowerCase()));
-      return nameMatch && modalityMatch && keywordMatch;
-    });
-  }, [nameQuery, keywordQuery, selectedModalities, practitioners]);
+  const [priceRange, setPriceRange] = useState([20, 150]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-12">
@@ -68,39 +29,31 @@ export function DiscoveryPage() {
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
+          {/* Filters Sidebar */}
           <aside className="w-full md:w-1/4 lg:w-1/5">
             <div className="sticky top-24 space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">Filters</h2>
-                <Button variant="ghost" size="sm" className="text-sm" onClick={clearFilters}>
+                <Button variant="ghost" size="sm" className="text-sm">
                   <X className="w-4 h-4 mr-1" /> Clear all
                 </Button>
               </div>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name-search" className="text-sm font-medium">Name</Label>
-                  <div className="relative mt-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="name-search" placeholder="Search by name..." className="pl-9" value={nameQuery} onChange={(e) => setNameQuery(e.target.value)} />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="keyword-search" className="text-sm font-medium">Keywords</Label>
-                  <div className="relative mt-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input id="keyword-search" placeholder="Search philosophy, specialty..." className="pl-9" value={keywordQuery} onChange={(e) => setKeywordQuery(e.target.value)} />
-                  </div>
+              <div>
+                <Label htmlFor="search" className="sr-only">Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input id="search" placeholder="Search by name..." className="pl-10" />
                 </div>
               </div>
-              <Accordion type="multiple" defaultValue={['modalities']} className="w-full">
+              <Accordion type="multiple" defaultValue={['modalities', 'price']} className="w-full">
                 <AccordionItem value="modalities">
                   <AccordionTrigger className="text-base font-medium">Modalities</AccordionTrigger>
                   <AccordionContent>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                       {ALL_MODALITIES.map(modality => (
                         <div key={modality} className="flex items-center space-x-2">
-                          <Checkbox id={`modality-${modality}`} checked={selectedModalities.has(modality)} onCheckedChange={(checked) => handleModalityChange(modality, !!checked)} />
-                          <Label htmlFor={`modality-${modality}`} className="font-normal cursor-pointer">{modality}</Label>
+                          <Checkbox id={`modality-${modality}`} />
+                          <Label htmlFor={`modality-${modality}`} className="font-normal">{modality}</Label>
                         </div>
                       ))}
                     </div>
@@ -110,7 +63,12 @@ export function DiscoveryPage() {
                   <AccordionTrigger className="text-base font-medium">Price Range</AccordionTrigger>
                   <AccordionContent>
                     <div className="p-1">
-                      <Slider value={priceRange} max={MAX_PRICE} step={10} onValueChange={setPriceRange} />
+                      <Slider
+                        defaultValue={priceRange}
+                        max={300}
+                        step={10}
+                        onValueChange={setPriceRange}
+                      />
                       <div className="flex justify-between text-sm text-muted-foreground mt-2">
                         <span>${priceRange[0]}</span>
                         <span>${priceRange[1]}</span>
@@ -121,34 +79,19 @@ export function DiscoveryPage() {
               </Accordion>
             </div>
           </aside>
+          {/* Results Grid */}
           <main className="w-full md:w-3/4 lg:w-4/5">
             <div className="mb-4">
-              <p className="text-sm text-muted-foreground">{isLoading ? 'Loading...' : `${filteredPractitioners.length} practitioners found`}</p>
+              <p className="text-sm text-muted-foreground">{MOCK_PRACTITIONERS.length} practitioners found</p>
             </div>
-            {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <Skeleton className="aspect-[4/3] w-full" />
-                    <Skeleton className="h-6 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                ))}
-              </div>
-            ) : filteredPractitioners.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredPractitioners.map((practitioner) => (
-                  <PractitionerCard key={practitioner.id} practitioner={practitioner} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center text-muted-foreground py-24 border-2 border-dashed rounded-lg">
-                <Frown className="w-16 h-16 mb-4" />
-                <h3 className="text-xl font-semibold">No Practitioners Found</h3>
-                <p className="mt-2 max-w-xs">Try adjusting your filters or clearing them to see all available practitioners.</p>
-                <Button variant="outline" className="mt-6" onClick={clearFilters}>Clear Filters</Button>
-              </div>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {MOCK_PRACTITIONERS.map((practitioner) => (
+                <PractitionerCard key={practitioner.id} practitioner={practitioner} />
+              ))}
+            </div>
+            <div className="mt-12 flex justify-center">
+              <Button variant="outline">Load More</Button>
+            </div>
           </main>
         </div>
       </div>
