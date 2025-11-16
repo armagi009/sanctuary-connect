@@ -1,15 +1,11 @@
-import { useBookingStore, BookedSession } from '@/stores/bookingStore';
+import { useBookingStore } from '@/stores/bookingStore';
 import { useAuthStore } from '@/stores/authStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Clock, User, Video, Notebook } from 'lucide-react';
+import { Calendar, Clock, User, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { MOCK_PRACTITIONERS } from '@/data/mockData';
-import { Link } from 'react-router-dom';
-interface PractitionerSessionListProps {
-  onShareNote: (session: BookedSession) => void;
-}
-export function PractitionerSessionList({ onShareNote }: PractitionerSessionListProps) {
+export function PractitionerSessionList() {
   const allBookedSessions = useBookingStore((state) => state.bookedSessions);
   const practitionerUser = useAuthStore((state) => state.user);
   // For demo purposes, we'll find the practitioner profile that matches the logged-in user's name.
@@ -47,11 +43,7 @@ export function PractitionerSessionList({ onShareNote }: PractitionerSessionList
                     <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> With a Seeker</span>
                   </div>
                 </div>
-                <Button asChild>
-                  <Link to={`/session/${session.id}`}>
-                    <Video className="w-4 h-4 mr-2" /> Start Session
-                  </Link>
-                </Button>
+                <Button><Video className="w-4 h-4 mr-2" /> Start Session</Button>
               </div>
             ))
           ) : (
@@ -62,12 +54,12 @@ export function PractitionerSessionList({ onShareNote }: PractitionerSessionList
       <Card>
         <CardHeader>
           <CardTitle>Past Sessions</CardTitle>
-          <CardDescription>A history of your completed sessions. You can share notes with seekers here.</CardDescription>
+          <CardDescription>A history of your completed sessions.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {pastSessions.length > 0 ? (
             pastSessions.map(session => (
-              <div key={session.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border rounded-lg bg-background">
+              <div key={session.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border rounded-lg bg-background opacity-70">
                 <div className="mb-4 sm:mb-0">
                   <h4 className="font-semibold">{session.session.title}</h4>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
@@ -75,9 +67,7 @@ export function PractitionerSessionList({ onShareNote }: PractitionerSessionList
                     <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> With a Seeker</span>
                   </div>
                 </div>
-                <Button variant="secondary" onClick={() => onShareNote(session)}>
-                  <Notebook className="w-4 h-4 mr-2" /> Share Notes
-                </Button>
+                <Button variant="ghost" disabled>Completed</Button>
               </div>
             ))
           ) : (

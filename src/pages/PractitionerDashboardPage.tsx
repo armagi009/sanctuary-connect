@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Calendar, Video, FileText } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import { PractitionerProfileForm } from '@/components/PractitionerProfileForm';
+import { PractitionerSessionList } from '@/components/PractitionerSessionList';
 export function PractitionerDashboardPage() {
   const user = useAuthStore((state) => state.user);
   if (!user) {
@@ -17,20 +19,15 @@ export function PractitionerDashboardPage() {
         <Tabs defaultValue="profile" className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:w-auto">
             <TabsTrigger value="profile"><User className="w-4 h-4 mr-2" /> Profile</TabsTrigger>
-            <TabsTrigger value="availability"><Calendar className="w-4 h-4 mr-2" /> Availability</TabsTrigger>
             <TabsTrigger value="sessions"><Video className="w-4 h-4 mr-2" /> Sessions</TabsTrigger>
+            <TabsTrigger value="availability"><Calendar className="w-4 h-4 mr-2" /> Availability</TabsTrigger>
             <TabsTrigger value="content"><FileText className="w-4 h-4 mr-2" /> Content</TabsTrigger>
           </TabsList>
           <TabsContent value="profile" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Public Profile</CardTitle>
-                <CardDescription>This is how seekers will see you on the platform. Keep it up to date.</CardDescription>
-              </CardHeader>
-              <CardContent className="text-center text-muted-foreground py-12">
-                <p>Profile management features coming soon.</p>
-              </CardContent>
-            </Card>
+            <PractitionerProfileForm />
+          </TabsContent>
+          <TabsContent value="sessions" className="mt-6">
+            <PractitionerSessionList />
           </TabsContent>
           <TabsContent value="availability" className="mt-6">
             <Card>
@@ -40,17 +37,6 @@ export function PractitionerDashboardPage() {
               </CardHeader>
               <CardContent className="text-center text-muted-foreground py-12">
                 <p>Calendar and availability management coming soon.</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="sessions" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming & Past Sessions</CardTitle>
-                <CardDescription>View your scheduled sessions and session history.</CardDescription>
-              </CardHeader>
-              <CardContent className="text-center text-muted-foreground py-12">
-                <p>Session management features coming soon.</p>
               </CardContent>
             </Card>
           </TabsContent>

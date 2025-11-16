@@ -36,10 +36,10 @@ export function DiscoveryPage() {
       const modalityMatch = selectedModalities.size === 0 || p.modalities.some(m => selectedModalities.has(m));
       // This is a mock filter as price is not on practitioner object.
       // We'll just let this pass for now. A real implementation would check session prices.
-      const priceMatch = true; 
+      const priceMatch = true;
       return nameMatch && modalityMatch && priceMatch;
     });
-  }, [searchQuery, selectedModalities, priceRange]);
+  }, [searchQuery, selectedModalities]);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8 md:py-12">
@@ -63,10 +63,10 @@ export function DiscoveryPage() {
                 <Label htmlFor="search" className="sr-only">Search</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input 
-                    id="search" 
-                    placeholder="Search by name..." 
-                    className="pl-10" 
+                  <Input
+                    id="search"
+                    placeholder="Search by name..."
+                    className="pl-10"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -79,8 +79,8 @@ export function DiscoveryPage() {
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                       {ALL_MODALITIES.map(modality => (
                         <div key={modality} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`modality-${modality}`} 
+                          <Checkbox
+                            id={`modality-${modality}`}
                             checked={selectedModalities.has(modality)}
                             onCheckedChange={(checked) => handleModalityChange(modality, !!checked)}
                           />
